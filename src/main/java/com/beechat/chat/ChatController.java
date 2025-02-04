@@ -9,19 +9,19 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class ChatController {
 
-    @MessageMapping("/chat.sendMessage")
-    @SendTo("/topic/public")
+    @MessageMapping("/chat.sendMessage") // Handles incoming messages
+    @SendTo("/topic/public") // sent to this endpoint
     public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
         return chatMessage;
     }
 
 
-    @MessageMapping("/chat.addUser")
-    @SendTo("topic/public")
+    @MessageMapping("/chat.addUser") // Client sends a request
+    @SendTo("topic/public") // Announces a user has joined
     public ChatMessage addUser(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
-        // Add username in websocket session
+        // Stores username in websocket session
         headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
-        return chatMessage;
+        return chatMessage; // Message sent & visibile to the group
     }
 
 }
