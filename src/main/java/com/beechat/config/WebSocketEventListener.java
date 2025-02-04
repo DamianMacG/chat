@@ -14,19 +14,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class WebSocketEventListener {
 
+ // Used to send messages to STOMP topics (like broadcasting to a group chat) - injected automatically with @RequiredArgsConstructor
  private final SimpMessageSendingOperations messageTemplate;
 
 
- @EventListener
+ @EventListener // Listens for websocket disconnect events
  public void handleWebSocketDisconnectEvent (SessionDisconnectEvent event) {
 
+  // Get headers and username
     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-
     String username = (String) headerAccessor.getSessionAttributes().get("username");
 
     if(username != null) {
         log.info("User disconnected: {}", username);
-        var chatMessage = ChatMessage.builder()
+        let chatMessage = ChatMessage.builder() // Lombok builder pattern
         .type(MessageType.LEAVE)
         .sender(username)
         .build();
